@@ -1,0 +1,108 @@
+/* Base background with dot pattern */
+.App {
+  background-color: #0a0a0a;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  min-height: 100vh;
+}
+
+/* Glassmorphism styles */
+.glass-box {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 127, 80, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(255, 127, 80, 0.15);
+}
+
+.glass-item {
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 127, 80, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-item:hover {
+  background: rgba(40, 40, 40, 0.6);
+  border-color: rgba(255, 127, 80, 0.3);
+}
+
+.glass-header {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 127, 80, 0.1);
+}
+
+.glass-footer {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 127, 80, 0.1);
+}
+
+/* Hero section specific styles */
+.hero-section {
+  position: relative;
+}
+
+/* Kannada text styling */
+.kannada-text {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 2;
+  font-size: 1.1rem;
+}
+
+.kannada-text p {
+  text-align: justify;
+}
+
+/* Background effects */
+.dark-glass {
+  background: rgba(15, 15, 15, 0.5);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 127, 80, 0.3);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 127, 80, 0.5);
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 127, 80, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
