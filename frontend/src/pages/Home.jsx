@@ -1,39 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, BookOpen, FileText, Video, Mail, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [passingPackages, setPassingPackages] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [pyq, setPyq] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for passing package
-  const passingPackages = [
-    { id: 1, title: 'PUC Passing Package', category: 'passing' },
-  ];
+  // Fetch all data on component mount
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
-  // Mock data for notes
-  const notes = [
-    { id: 1, title: 'I PUC Notes', category: 'notes' },
-    { id: 2, title: 'II PUC Notes', category: 'notes' },
-  ];
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
+      
+      const [packagesRes, notesRes, pyqRes, videosRes] = await Promise.all([
+        axios.get(`${API}/passing-packages`),
+        axios.get(`${API}/notes`),
+        axios.get(`${API}/pyq`),
+        axios.get(`${API}/videos`)
+      ]);
 
-  // Mock data for PYQ
-  const pyq = [
-    { id: 1, title: 'I PUC PYQ', category: 'pyq' },
-    { id: 2, title: 'II PUC PYQ', category: 'pyq' },
-  ];
-
-  // Mock data for videos
-  const videos = [
-    { id: 1, title: 'Important Questions - Lesson 2024', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-    { id: 2, title: 'Grammar Basics', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-    { id: 3, title: 'Poetry Analysis', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-    { id: 4, title: 'Essay Writing Tips', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-    { id: 5, title: 'Literature Review', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-    { id: 6, title: 'Exam Preparation', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' },
-  ];
+      setPassingPackages(packagesRes.data);
+      setNotes(notesRes.data);
+      setPyq(pyqRes.data);
+      setVideos(videosRes.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDownload = (item) => {
-    console.log('Downloading:', item.title);
+    window.open(item.downloadUrl, '_blank');
+  };
+
+  const handleVideoClick = (video) => {
+    window.open(video.videoUrl, '_blank');
   };
 
   const scrollToSection = (sectionId) => {
@@ -179,113 +192,125 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Passing Package Section */}
-      <section id="passing-package" className="py-16 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="glass-box-enhanced p-8">
-            <div className="flex items-center gap-3 mb-8">
-              <Download className="w-8 h-8 text-primary-coral" />
-              <h2 className="text-3xl font-bold text-primary-coral font-instrument">Passing Package</h2>
-            </div>
-            <div className="space-y-4">
-              {passingPackages.map((item) => (
-                <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
-                  <span className="text-lg font-instrument">{item.title}</span>
-                  <Button
-                    onClick={() => handleDownload(item)}
-                    className="btn-download font-instrument"
-                  >
-                    Download
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="text-white text-xl font-instrument">Loading...</div>
         </div>
-      </section>
-
-      {/* Notes Section */}
-      <section id="notes" className="py-16 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="glass-box-enhanced p-8">
-            <div className="flex items-center gap-3 mb-8">
-              <BookOpen className="w-8 h-8 text-primary-coral" />
-              <h2 className="text-3xl font-bold text-primary-coral font-instrument">Notes</h2>
-            </div>
-            <div className="space-y-4">
-              {notes.map((item) => (
-                <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
-                  <span className="text-lg font-instrument">{item.title}</span>
-                  <Button
-                    onClick={() => handleDownload(item)}
-                    className="btn-download font-instrument"
-                  >
-                    Download
-                  </Button>
+      ) : (
+        <>
+          {/* Passing Package Section */}
+          <section id="passing-package" className="py-16 px-6">
+            <div className="container mx-auto max-w-6xl">
+              <div className="glass-box-enhanced p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <Download className="w-8 h-8 text-primary-coral" />
+                  <h2 className="text-3xl font-bold text-primary-coral font-instrument">Passing Package</h2>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PYQ Section */}
-      <section id="pyq" className="py-16 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="glass-box-enhanced p-8">
-            <div className="flex items-center gap-3 mb-8">
-              <FileText className="w-8 h-8 text-primary-coral" />
-              <h2 className="text-3xl font-bold text-primary-coral font-instrument">PYQ</h2>
-            </div>
-            <div className="space-y-4">
-              {pyq.map((item) => (
-                <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
-                  <span className="text-lg font-instrument">{item.title}</span>
-                  <Button
-                    onClick={() => handleDownload(item)}
-                    className="btn-download font-instrument"
-                  >
-                    Download
-                  </Button>
+                <div className="space-y-4">
+                  {passingPackages.map((item) => (
+                    <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
+                      <span className="text-lg font-instrument">{item.title}</span>
+                      <Button
+                        onClick={() => handleDownload(item)}
+                        className="btn-download font-instrument"
+                      >
+                        Download
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* Latest Videos Section */}
-      <section id="videos" className="py-16 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="glass-box-enhanced p-8">
-            <div className="flex items-center gap-3 mb-8">
-              <Video className="w-8 h-8 text-primary-coral" />
-              <h2 className="text-3xl font-bold text-primary-coral font-instrument">Latest Videos</h2>
+          {/* Notes Section */}
+          <section id="notes" className="py-16 px-6">
+            <div className="container mx-auto max-w-6xl">
+              <div className="glass-box-enhanced p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <BookOpen className="w-8 h-8 text-primary-coral" />
+                  <h2 className="text-3xl font-bold text-primary-coral font-instrument">Notes</h2>
+                </div>
+                <div className="space-y-4">
+                  {notes.map((item) => (
+                    <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
+                      <span className="text-lg font-instrument">{item.title}</span>
+                      <Button
+                        onClick={() => handleDownload(item)}
+                        className="btn-download font-instrument"
+                      >
+                        Download
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.map((video) => (
-                <div key={video.id} className="frosted-item rounded-lg overflow-hidden cursor-pointer">
-                  <div className="relative aspect-video bg-black/30">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-full object-cover opacity-70"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-primary-coral/80 rounded-full flex items-center justify-center hover:bg-primary-coral transition-colors">
-                        <Video className="w-8 h-8 text-white" />
+          </section>
+
+          {/* PYQ Section */}
+          <section id="pyq" className="py-16 px-6">
+            <div className="container mx-auto max-w-6xl">
+              <div className="glass-box-enhanced p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <FileText className="w-8 h-8 text-primary-coral" />
+                  <h2 className="text-3xl font-bold text-primary-coral font-instrument">PYQ</h2>
+                </div>
+                <div className="space-y-4">
+                  {pyq.map((item) => (
+                    <div key={item.id} className="frosted-item rounded-lg p-4 flex items-center justify-between">
+                      <span className="text-lg font-instrument">{item.title}</span>
+                      <Button
+                        onClick={() => handleDownload(item)}
+                        className="btn-download font-instrument"
+                      >
+                        Download
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Latest Videos Section */}
+          <section id="videos" className="py-16 px-6">
+            <div className="container mx-auto max-w-6xl">
+              <div className="glass-box-enhanced p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <Video className="w-8 h-8 text-primary-coral" />
+                  <h2 className="text-3xl font-bold text-primary-coral font-instrument">Latest Videos</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videos.map((video) => (
+                    <div 
+                      key={video.id} 
+                      className="frosted-item rounded-lg overflow-hidden cursor-pointer"
+                      onClick={() => handleVideoClick(video)}
+                    >
+                      <div className="relative aspect-video bg-black/30">
+                        <img
+                          src={video.thumbnail}
+                          alt={video.title}
+                          className="w-full h-full object-cover opacity-70"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-16 h-16 bg-primary-coral/80 rounded-full flex items-center justify-center hover:bg-primary-coral transition-colors">
+                            <Video className="w-8 h-8 text-white" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <p className="text-sm font-instrument">{video.title}</p>
                       </div>
                     </div>
-                  </div>
-                  <div className="p-4">
-                    <p className="text-sm font-instrument">{video.title}</p>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Contact Section */}
       <section id="contact" className="py-16 px-6">

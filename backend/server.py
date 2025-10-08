@@ -5,10 +5,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 from typing import List
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 ROOT_DIR = Path(__file__).parent
@@ -27,44 +27,131 @@ api_router = APIRouter(prefix="/api")
 
 
 # Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+class DownloadItem(BaseModel):
+    id: str
+    title: str
+    downloadUrl: str
+    category: str
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+class Video(BaseModel):
+    id: str
+    title: str
+    thumbnail: str
+    videoUrl: str
+    publishedAt: str = ""
+
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Kannada Sampada API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+# Passing Package endpoint
+@api_router.get("/passing-packages", response_model=List[DownloadItem])
+async def get_passing_packages():
+    passing_packages = [
+        DownloadItem(
+            id="1",
+            title="PUC Passing Package",
+            downloadUrl="https://drive.google.com/file/d/10Tjhkd9WVT58Xfi7amABct2hw-1Ksjy5/view",
+            category="passing"
+        )
+    ]
+    return passing_packages
+
+
+# Notes endpoint
+@api_router.get("/notes", response_model=List[DownloadItem])
+async def get_notes():
+    notes = [
+        DownloadItem(
+            id="1",
+            title="I PUC Notes",
+            downloadUrl="https://drive.google.com/file/d/1hq0JuRUQ_-gv4FFXztkUFXSK9NzEZAds/view",
+            category="notes"
+        ),
+        DownloadItem(
+            id="2",
+            title="II PUC Notes",
+            downloadUrl="https://drive.google.com/file/d/1h9Is2hFCuSFyzhEI5sDoWluV9TpoN-DF/view",
+            category="notes"
+        )
+    ]
+    return notes
+
+
+# PYQ endpoint
+@api_router.get("/pyq", response_model=List[DownloadItem])
+async def get_pyq():
+    pyq = [
+        DownloadItem(
+            id="1",
+            title="I PUC PYQ",
+            downloadUrl="https://drive.google.com/drive/folders/1D3QK84-JfN8IFDjSad67mFoSSIOQwuiU",
+            category="pyq"
+        ),
+        DownloadItem(
+            id="2",
+            title="II PUC PYQ",
+            downloadUrl="https://drive.google.com/drive/folders/1tPGvZmy5DmnlDhKf_dl-SX-5IeyfToaP",
+            category="pyq"
+        )
+    ]
+    return pyq
+
+
+# Videos endpoint - using YouTube channel RSS feed (no API key needed)
+@api_router.get("/videos", response_model=List[Video])
+async def get_videos():
+    # For now, returning placeholder structure
+    # You can add RSS feed parsing later or manual video list
+    videos = [
+        Video(
+            id="1",
+            title="Latest Kannada Literature Lecture",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        ),
+        Video(
+            id="2",
+            title="Important Grammar Topics",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        ),
+        Video(
+            id="3",
+            title="Poetry Analysis Guide",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        ),
+        Video(
+            id="4",
+            title="Essay Writing Tips",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        ),
+        Video(
+            id="5",
+            title="Exam Preparation Strategy",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        ),
+        Video(
+            id="6",
+            title="Literature Review Session",
+            thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+            videoUrl="https://www.youtube.com/@KannadaSampada",
+            publishedAt="2024-01-01"
+        )
+    ]
+    return videos
+
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -72,7 +159,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
