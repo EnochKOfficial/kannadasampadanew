@@ -63,100 +63,102 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Header with Navigation */}
-      <header className="glass-header fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <h1 className="text-2xl font-bold text-primary-coral font-instrument">
-              Kannada Sampada
-            </h1>
+      {/* Sticky Header with Navigation */}
+      <header className="glass-header">
+        <div className="glass-header-inner">
+          <div className="container mx-auto">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <h1 className="text-2xl font-bold text-primary-coral font-instrument">
+                Kannada Sampada
+              </h1>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
-              <button
-                onClick={() => scrollToSection('passing-package')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
-              >
-                Passing Package
-              </button>
-              <button
-                onClick={() => scrollToSection('notes')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
-              >
-                Notes
-              </button>
-              <button
-                onClick={() => scrollToSection('pyq')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
-              >
-                PYQs
-              </button>
-              <button
-                onClick={() => scrollToSection('videos')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
-              >
-                Latest Videos
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
-              >
-                Contact
-              </button>
-            </nav>
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-8">
+                <button
+                  onClick={() => scrollToSection('passing-package')}
+                  className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+                >
+                  Passing Package
+                </button>
+                <button
+                  onClick={() => scrollToSection('notes')}
+                  className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+                >
+                  Notes
+                </button>
+                <button
+                  onClick={() => scrollToSection('pyq')}
+                  className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+                >
+                  PYQs
+                </button>
+                <button
+                  onClick={() => scrollToSection('videos')}
+                  className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+                >
+                  Latest Videos
+                </button>
+                <button
+                  onClick={() => scrollToSection('contact')}
+                  className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+                >
+                  Contact
+                </button>
+              </nav>
 
-            {/* Mobile Hamburger */}
-            <button
-              className="md:hidden text-white"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+              {/* Mobile Hamburger */}
+              <button
+                className="md:hidden text-white z-[101]"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden glass-mobile-menu">
-            <nav className="flex flex-col items-center gap-6 py-6">
-              <button
-                onClick={() => scrollToSection('passing-package')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument text-lg"
-              >
-                Passing Package
-              </button>
-              <button
-                onClick={() => scrollToSection('notes')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument text-lg"
-              >
-                Notes
-              </button>
-              <button
-                onClick={() => scrollToSection('pyq')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument text-lg"
-              >
-                PYQs
-              </button>
-              <button
-                onClick={() => scrollToSection('videos')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument text-lg"
-              >
-                Latest Videos
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="nav-link text-white hover:text-primary-coral transition-colors font-instrument text-lg"
-              >
-                Contact
-              </button>
-            </nav>
-          </div>
-        )}
       </header>
 
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="glass-mobile-menu">
+          <nav>
+            <button
+              onClick={() => scrollToSection('passing-package')}
+              className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+            >
+              Passing Package
+            </button>
+            <button
+              onClick={() => scrollToSection('notes')}
+              className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+            >
+              Notes
+            </button>
+            <button
+              onClick={() => scrollToSection('pyq')}
+              className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+            >
+              PYQs
+            </button>
+            <button
+              onClick={() => scrollToSection('videos')}
+              className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+            >
+              Latest Videos
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="nav-link text-white hover:text-primary-coral transition-colors font-instrument"
+            >
+              Contact
+            </button>
+          </nav>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section className="hero-section pt-32 pb-20 px-6">
+      <section className="hero-section pt-40 pb-20 px-6">
         <div className="container mx-auto max-w-4xl">
           <div className="glass-box-enhanced p-8 md:p-12">
             <h2 className="text-4xl md:text-5xl font-bold text-primary-coral mb-6 text-center font-noto-serif-kannada">
